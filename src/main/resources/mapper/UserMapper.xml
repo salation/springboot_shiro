@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.shiro_practice.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.example.shiro_practice.entity.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="insert_uid" jdbcType="INTEGER" property="insertUid"/>
+        <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="is_del" jdbcType="BIT" property="isDel"/>
+        <result column="is_job" jdbcType="BIT" property="isJob"/>
+        <result column="mcode" jdbcType="VARCHAR" property="mcode"/>
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, username, mobile, email, password, insert_uid,
+        insert_time,
+        update_time, is_del,
+        is_job, mcode, send_time, version
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!--=Start getUsers 分页查询用户列表userSearch -->
+    <select id="getUsers" resultType="com.example.shiro_practice.entity.UserRoleDto">
+        select
+        u.id, u.username, u.mobile,r.role_name
+        from user u
+        left join user_role ur on u.id = ur.user_id
+        left join role r on ur.role_id = r.id
+
+    </select>
+    <!--&lt;!&ndash;=End getUsers 分页查询用户列表 &ndash;&gt;-->
+
+
+    <!--=Start findUserByMobile 根据手机号获取用户数据 -->
+    <select id="findUserByMobile" resultType="com.example.shiro_practice.entity.User">
+        select
+        id, username,
+        mobile,password, email, insert_uid insertUid, insert_time
+        insertTime,
+        update_time, is_del,is_job,mcode,send_time sendTime,version
+        from user
+        WHERE
+        mobile=#{mobile} and is_del=0
+    </select>
+    <!--=End findUserByMobile 根据手机号查找用户 -->
+    <!--=Start findUserByName 根据用户名获取用户数据 -->
+    <select id="findUserByName" resultType="com.example.shiro_practice.entity.User">
+        select
+        id, username,password,
+        mobile, email, insert_uid insertUid, insert_time
+        insertTime,
+        update_time updateTime, is_del isDel,is_job
+        isJob,mcode,send_time
+        sendTime,version
+        from user
+        WHERE username=#{username} and is_del=0
+    </select>
+    <!--=End findUserByName 根据用户名查找用户 -->
+
+</mapper>

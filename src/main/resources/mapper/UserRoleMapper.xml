@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.shiro_practice.mapper.UserRoleMapper">
+    <resultMap id="BaseResultMap" type="com.example.shiro_practice.entity.UserRoleKey">
+        <id column="user_id" property="userId" jdbcType="INTEGER"/>
+        <id column="role_id" property="roleId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <update id="updateUserRoleByUserId" parameterType="com.example.shiro_practice.entity.UserRoleKey">
+        update user_role
+        set
+        role_id = #{roleId,jdbcType=INTEGER}
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+</mapper>

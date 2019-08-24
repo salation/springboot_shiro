@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.shiro_practice.mapper.PermissionMapper">
+    <resultMap id="BaseResultMap" type="com.example.shiro_practice.entity.Permission">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="INTEGER"/>
+        <result column="zindex" property="zindex" jdbcType="INTEGER"/>
+        <result column="istype" property="istype" jdbcType="INTEGER"/>
+        <result column="descpt" property="descpt" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="page" property="page" jdbcType="VARCHAR"/>
+        <result column="insert_time" property="insertTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, name, pid, zindex, istype, descpt, code, icon, page, insert_time, update_time
+    </sql>
+
+    <sql id="PermColumn">
+        id, name,pid pId, zindex, istype, code, icon, page
+    </sql>
+
+    <select id="findPermsByRole" resultType="com.example.shiro_practice.entity.Permission">
+        select
+        <include refid="PermColumn"/>
+        from permission p
+        LEFT JOIN role_permission rp ON rp.permit_id=p.id
+        WHERE rp.role_id=#{roleId}
+    </select>
+
+</mapper>

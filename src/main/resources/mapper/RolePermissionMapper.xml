@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.shiro_practice.mapper.RolePermissionMapper">
+    <resultMap id="BaseResultMap" type="com.example.shiro_practice.entity.RolePermissionKey">
+        <id column="permit_id" property="permitId" jdbcType="INTEGER"/>
+        <id column="role_id" property="roleId" jdbcType="INTEGER"/>
+    </resultMap>
+    <delete id="deleteByRoleId" parameterType="java.lang.Integer">
+        delete from role_permission
+        where  role_id = #{roleId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.example.shiro_practice.entity.RolePermissionKey">
+        insert into role_permission (permit_id, role_id)
+        values (#{permitId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER})
+    </insert>
+
+</mapper>
