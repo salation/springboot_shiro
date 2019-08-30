@@ -27,6 +27,7 @@
                 <td>${role.perms}</td>
                 <td>
                     <a type="button" href="/role/update/${role.id}">修改權限範圍</a>
+                    <a type="button" href="/role/updateTree/${role.id}">修改權限範圍(ztree版)</a>
                 </td>
             </tr>
         </c:forEach>

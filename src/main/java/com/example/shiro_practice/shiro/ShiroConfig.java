@@ -48,7 +48,19 @@ public class ShiroConfig {
         filterChainDefinationMap.put("/logout","logout");
         filterChainDefinationMap.put("/login","anon");
 
-        filterChainDefinationMap.put("/home","authc");
+
+        filterChainDefinationMap.put("/role/getRoleList","anon");
+        filterChainDefinationMap.put("/role/getMenuTestListP","anon");
+        filterChainDefinationMap.put("/role/updateMenuTestList","anon");
+        filterChainDefinationMap.put("/role/getSelectPerm/*","anon");
+        filterChainDefinationMap.put("/role/updateTree/*","anon");
+
+        filterChainDefinationMap.put("/zTree_v3/*","anon");
+        filterChainDefinationMap.put("/zTree_v3/*/**","anon");
+
+        filterChainDefinationMap.put("/","user");
+        filterChainDefinationMap.put("/home","user");
+        //filterChainDefinationMap.put("/role/test","user");
         filterChainDefinationMap.put("/*", "authc");
         filterChainDefinationMap.put("/*/*", "authc");
         filterChainDefinationMap.put("/*/*/*", "authc");
@@ -63,13 +75,12 @@ public class ShiroConfig {
     @Bean
     public SecurityManager securityManager(){
         System.out.println("securityManager");
-        //DefaultWebSessionManager：用于Web环境的实现，可以替代ServletContainerSessionManager，自己维护着会话，直接废弃了Servlet容器的会话管理。
-        //ServletContainerSessionManager：DefaultWebSecurityManager使用的默认实现，用于Web环境，其直接使用Servlet容器的会话；
+        //DefaultWebSecurityManager使用的默认实现，用于Web环境，其直接使用Servlet容器的会话；
         DefaultSecurityManager securityManager =new DefaultWebSecurityManager();
+        securityManager.setCacheManager(ehCacheManager());
         securityManager.setRealm(shiroRealm());
         securityManager.setRememberMeManager(rememberMeManager());
-        securityManager.setSessionManager(sessionManager());
-        securityManager.setCacheManager(ehCacheManager());
+        //securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
 
@@ -159,6 +170,8 @@ public class ShiroConfig {
         //sessionManager.setCacheManager(ehCacheManager());
         sessionManager.setSessionDAO(enterCacheSessionDAO());
         sessionManager.setSessionIdCookie(sessionIdCookie());
+        //设置全局会话超时时间
+        //sessionManager.setGlobalSessionTimeout(360000);
         return sessionManager;
     }
     /**

@@ -21,5 +21,10 @@ public class PermissionServiceImpl implements PermissionService {
         return permissionMapper.findPermsByRole(roleId);
     }
 
+    @Override
+    public List<Permission> findPerm() {
+        return permissionMapper.findPerm();
+    }
+
 
 }

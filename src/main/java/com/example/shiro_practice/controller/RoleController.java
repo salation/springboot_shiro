@@ -2,23 +2,27 @@ package com.example.shiro_practice.controller;
 
 
 import com.example.shiro_practice.entity.*;
+import com.example.shiro_practice.mapper.MenuMapper;
 import com.example.shiro_practice.service.AuthService;
 import com.example.shiro_practice.service.PermissionService;
 import com.example.shiro_practice.service.RoleService;
 import com.example.shiro_practice.service.UserService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @项目名称：wyait-manage
@@ -39,11 +43,14 @@ public class RoleController {
     private RoleService roleService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private MenuMapper menuMapper;
 
     @RequestMapping("/test")
+    @ResponseBody
     @RequiresRoles(value = { "superman" }, logical = Logical.OR)
     public String test1(){
-        return "user/userMenu";
+        return "11111";
     }
 
     @RequestMapping("/roleList")
@@ -62,6 +69,87 @@ public class RoleController {
         // 返回pages目录下的admin/users.jsp页面
         return "/role/roleMenu";
     }
+
+    /**
+     * 获取tree权限列表
+     * @return
+     */
+    @RequestMapping("/getRoleList")
+    public String getRoleList(){
+        return "/role/roleUpdateTree";
+    }
+    @RequestMapping("/getMenuTestListP")
+    @ResponseBody
+    public Object getRoleListP(){
+        Map<String,Object> map =new HashMap<String, Object>();
+        List<Permission> permissions = permissionService.findPerm();
+        //List<MenuTest> menuTests = menuMapper.findPerms();
+        map.put("permissions",permissions);
+        return map;
+    }
+
+    /**
+     * 获取tree权限修改列表页面
+     * @param id
+     * @param modelMap
+     * @return
+     */
+    @GetMapping(value = "/updateTree/{id}")
+    public String updateTreeUser(@PathVariable("id")Integer id,ModelMap modelMap){
+        modelMap.addAttribute("id",id);
+        return "/role/roleUpdateTree";
+    }
+
+    /**
+     * tree权限修改列表根据role默认选中
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getSelectPerm/{id}")
+    @ResponseBody
+    public Object getSelectPerm(@PathVariable("id")Integer id){
+        Map<String,Object> map =new HashMap<String, Object>();
+        //List<MenuTest> menuTests =menuMapper.findSelectPermById(id);
+        List<Permission> permissions = permissionService.findPermsByRole(id);
+        map.put("permissions",permissions);
+        return map;
+    }
+
+    /**
+     * 修改页面提交
+     * @param httpServletRequest
+     * @param httpServletResponse
+     * @return
+     */
+    @RequestMapping("/updateMenuTestList")
+
+    public String updateMenuTestList(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        Integer roleId = Integer.valueOf(httpServletRequest.getParameter("roleId").toString());
+        String nodesJson =httpServletRequest.getParameter("nodesJson");
+        JSONArray jsonArray = JSONArray.fromObject(nodesJson);
+        JSONObject jsonObject;
+        RolePermissionKey rolePermissionKey =new RolePermissionKey();
+        roleService.deleteByRoleId(roleId);
+        //List<Map<String,String>> mao =new ArrayList<>();
+        for(int i=0;i<jsonArray.size();i++){
+            //Map<String,String> updateMap = new HashMap<String,String>();
+            jsonObject = jsonArray.getJSONObject(i);
+            if(jsonObject.get("id")!=null){
+                rolePermissionKey.setPermitId(Integer.valueOf(jsonObject.get("id").toString()));
+            }else{
+                break;
+            }
+            rolePermissionKey.setRoleId(roleId);
+            roleService.insert(rolePermissionKey);
+            //updateMap.put("name",jsonObject.get("name").toString());
+            //updateMap.put("id",jsonObject.get("id").toString());
+            //mao.add(updateMap);
+        }
+        //Map<String,List> map = new HashMap<>();
+        //map.put("mao",mao);
+        return "redirect:/role/roleList";
+    }
+
 
     @GetMapping(value = "update/{id}")
     @RequiresRoles(value = { "superman"}, logical = Logical.OR)

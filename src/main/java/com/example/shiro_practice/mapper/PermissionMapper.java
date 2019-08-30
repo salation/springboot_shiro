@@ -16,4 +16,6 @@ public interface PermissionMapper {
      * @return
      */
     List<Permission> findPermsByRole(Integer roleId);
+
+    List<Permission> findPerm ();
 }

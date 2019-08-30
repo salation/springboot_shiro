@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface PermissionService {
     List<Permission> findPermsByRole(Integer roleId);
+    List<Permission> findPerm();
 }

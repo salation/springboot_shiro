@@ -30,4 +30,10 @@
         WHERE rp.role_id=#{roleId}
     </select>
 
+    <select id="findPerm" resultMap="BaseResultMap">
+        select
+        <include refid="PermColumn"/>
+        from permission
+    </select>
+
 </mapper>

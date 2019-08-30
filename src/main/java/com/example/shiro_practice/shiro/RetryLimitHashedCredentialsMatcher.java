@@ -34,7 +34,6 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
     public boolean doCredentialsMatch(AuthenticationToken token,
                                       AuthenticationInfo info) {
         //获取登录用户名
-        System.out.println("doCredentialsMatch");
         String username = (String) token.getPrincipal();
         //从ehcache中获取密码输错次数
         // retryCount
